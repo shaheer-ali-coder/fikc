@@ -1,4 +1,6 @@
 const axios = require('axios')
+const fs = require('fs')
+const path = require('path')
 const keyboard_2 = {
             reply_markup: {
               inline_keyboard: [
@@ -7,31 +9,7 @@ const keyboard_2 = {
                     { text: 'Solana Bot + group $59', callback_data: 'solana_group' },
                     
                   ],
-                  [
-                    { text: 'ETH: 1m(np sup.) $100', callback_data: 'eth_nosup' },
-                    
-                  ],
-                  [
-                    { text: 'ETH: 1m(group + sup.) $200', callback_data: 'eth_group_sup_one' },
-
-                    
-                  ],
-                  [
-                    { text: 'ETH: 3m(group + sup.) $550', callback_data: 'eth_group_sup_three' },
-                    
-                  ],
-                  [
-                    { text: 'ETH Pack:10 checks $50', callback_data: 'eth_ten' },
-                    
-                  ],
-                  [
-                    { text: 'ETH Pack:50 Checks $150', callback_data: 'eth_fifty' },
-                    
-                  ],
-                  [
-                    { text: 'ETH Pack:100 Checks 280$', callback_data: 'eth_hundred' },
-                    
-                  ],
+                  
                   [
                     { text: 'Manager(Online 9am-9pm UTC+3)', callback_data: 'manager' },
                     
@@ -39,7 +17,7 @@ const keyboard_2 = {
               ],
             },
           };
-const message = `💡After payment send hash txn 0x...💡\n\nHave problem? Write @Zelfiguru`
+const message = `💡After payment send hash txn 0x...💡\n\nHave problem? Write @zimmaman`
 let payment = 'false'
 
 
@@ -99,12 +77,69 @@ const token = '6612601598:AAFkfszWVgk2RRz6M5Dh5lUPEoXZQvD43Os';
 const bot = new TelegramBot(token, { polling: true });
 
 // Listen for the /start command
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start(?: (.*))?/, (msg, match) => {
+  console.log("msg recieved")
   const chatId = msg.chat.id;
+  const referralCode = match[1] || ''; // Extract referral code from the match or use an empty string if not provided
+  console.log(referralCode)
+  // Process the referral code (e.g., store it in a database)
+  // console.log(`Referral code ${referralCode} received from user ${msg.from.id}`);
+  fs.readFile('../zelguru_bot/data.json', 'utf8', (err, data) => {
+    if (err) {
+        console.error('Error reading file:', err);
+        return;
+    }
+
+    
+        const jsonData = JSON.parse(data);
+        let referralCodeMatched = false;
+      console.log(jsonData)
+        // Check if referral code matches any entry in the JSON data
+        for (const userId in jsonData) {
+          const userData = jsonData[userId];
+          for (const uniqueId in userData) {
+              const user = userData[uniqueId];
+              if (user && user.code === referralCode) {
+                  if (!user.hasOwnProperty('buys')) {
+                      user.buys = 1;
+                  } else {
+                      user.buys += 1;
+                  }
+                  user.money += 8.85;
+                  referralCodeMatched = true;
+                  break;
+              }
+          }
+          if (referralCodeMatched) {
+              break;
+          }
+      }
+      
+      
+      
+      
+        // Rewrite the updated JSON data to the file
+        if (referralCodeMatched) {
+            fs.writeFile('../zelguru_bot/data.json', JSON.stringify(jsonData, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    return;
+                }
+                console.log('Data updated successfully!');
+            });
+        }
+
+      
+
+  bot.sendMessage(chatId, "Choose an option.",{parse_mode:"HTML",...keyboard_2});
+      })
+});
+// bot.onText(/\/start/, (msg) => {
+  // const chatId = msg.chat.id;
   
   // Send a welcome message
-  bot.sendMessage(chatId, "Choose an option.",{parse_mode:"HTML",...keyboard_2});
-});
+  
+// });
 bot.on('message', (msg) => {
   // Check if state is 'get'
   const chatId = msg.chat.id; // Fetching chatId
