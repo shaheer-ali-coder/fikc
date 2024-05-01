@@ -1,129 +1,116 @@
-const TelegramBot = require('node-telegram-bot-api');
+const TelegramBot = require("node-telegram-bot-api");
 
 // Replace 'YOUR_TELEGRAM_BOT_TOKEN' with your actual token
-const bot = new TelegramBot('6927370530:AAHcTRb3TBDpbVVrbU812GGs8pEXkcNUmBA', { polling: true });
-
+const bot = new TelegramBot("6927370530:AAHcTRb3TBDpbVVrbU812GGs8pEXkcNUmBA", {
+  polling: true,
+});
+const keyboard_ = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        {
+          text: "GF#1: First 10 Transactions",
+          callback_data: "GF#1: First 10 Transactions",
+        },
+      ],
+      [{ text: "GF#2: Top 10 Holders", callback_data: "GF#2: Top 10 Holders" }],
+      [
+        {
+          text: "GF#3: Contract Verified",
+          callback_data: "GF#3: Contract Verified",
+        },
+      ],
+      [
+        {
+          text: "GF#4: Socials + Website",
+          callback_data: "GF#4: Socials + Website",
+        },
+      ],
+      [
+        {
+          text: "GF#5: Renounced Ownership",
+          callback_data: "GF#5: Renounced Ownership",
+        },
+      ],
+      [{ text: "GF#6: Honey Pot", callback_data: "GF#6: Honey Pot" }],
+      [
+        {
+          text: "GF#7: LP Burned/Locked",
+          callback_data: "GF#7: LP Burned/Locked",
+        },
+      ],
+    ],
+  },
+};
 // Command to start the bot
 bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id;
+  const chatId = msg.chat.id;
 
-    // Sending the start message with options
-    bot.sendMessage(chatId, 'Select an option:', {
-        reply_markup: {
-            keyboard: [
-                ['GF#1: First 10 Transactions', 'GF#2: Top 10 Holders'],
-                ['GF#3: Contract Verified', 'GF#4: Socials + Website'],
-                ['GF#5: Renounced Ownership', 'GF#6: Honey Pot'],
-                ['GF#7: LP Burned/Locked']
-            ],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
+  // Sending the start message with options
+  bot.sendMessage(chatId, "Select an option:", {parse_mode:"HTML",...keyboard_});
 });
+bot.on("callback_query", (callbackQuery) => {
+  // const option = callbackQuery.data;
+  const action = callbackQuery.data;
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
 
-// Handle option selection
-bot.onText(/GF#1: First 10 Transactions/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending dummy links for the first 10 transactions
-    bot.sendMessage(chatId, `First 10 Transactions:
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com`, {
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
-});
 
-bot.onText(/GF#2: Top 10 Holders/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending dummy links for the top 10 holders
-    bot.sendMessage(chatId, `Top 10 Holders:
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com
-    Solana https://example.com`, {
-        
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
-});
+  // Perform different actions based on the callback data
+  switch (action) {
+    case "GF#1: First 10 Transactions":
+      bot.sendMessage(
+        chatId,
+        `First 10 Transactions:
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com
+            Solana https://example.com`
+      );
 
-bot.onText(/GF#3: Contract Verified/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending 'Yes' with a dummy link for contract verification
-    bot.sendMessage(chatId, 'Contract Verified: Yes | https://example.com', {
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
-});
-
-bot.onText(/GF#4: Socials \+ Website/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending dummy website name, telegram username, and twitter name with links
-    bot.sendMessage(chatId, 'Website: Dummy Website Name | https://dummylink.com\nTelegram: @dummy_username | https://dummylink.com\nTwitter: @dummy_twitter | https://dummylink.com', {
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
-});
-
-bot.onText(/GF#5: Renounced Ownership/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending 'Yes' with a dummy link for renounced ownership
-    bot.sendMessage(chatId, 'Renounced Ownership: Yes | https://dummylink.com', {
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
-});
-
-bot.onText(/GF#6: Honey Pot/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending 'Yes' with a dummy link for honey pot
-    bot.sendMessage(chatId, 'Honey Pot: Yes', {
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
-});
-
-bot.onText(/GF#7: LP Burned\/Locked/, (msg) => {
-    const chatId = msg.chat.id;
-    // Sending LP status as burned and locked
-    bot.sendMessage(chatId, 'LP Burned: Yes\nLP Locked: Yes', {
-        reply_markup: {
-            keyboard: [],
-            resize_keyboard: true,
-            one_time_keyboard: true
-        }
-    });
+      break;
+    case "GF#2: Top 10 Holders":
+      bot.sendMessage(
+        chatId,
+        `Top 10 Holders:
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com
+    Solana https://example.com`
+      );
+      break;
+    case "GF#3: Contract Verified":
+      bot.sendMessage(chatId, "Contract Verified: Yes | https://example.com");
+      break;
+    case "GF#4: Socials + Website":
+      bot.sendMessage(
+        chatId,
+        "Website: Dummy Website Name | https://dummylink.com\nTelegram: @dummy_username | https://dummylink.com\nTwitter: @dummy_twitter | https://dummylink.com"
+      );
+      break;
+    case "GF#5: Renounced Ownership":
+      bot.sendMessage(
+        chatId,
+        "Renounced Ownership: Yes | https://dummylink.com"
+      );
+      break;
+    case "GF#6: Honey Pot":
+      bot.sendMessage(chatId, "Honey Pot: Yes");
+      break;
+    case "GF#7: LP Burned/Locked":
+      bot.sendMessage(chatId, "LP Burned: Yes\nLP Locked: Yes");
+      break;
+  }
 });
